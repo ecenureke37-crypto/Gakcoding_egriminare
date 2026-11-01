@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "project": "Harput Ulu Camii ve Egri Minare",
+  "images": [
+    {
+      "file": "cami.jpg",
+      "title": "Harput Ulu Cami 9621",
+      "creator": "Dosseman",
+      "year": 2006,
+      "source": "https://commons.wikimedia.org/wiki/File:Harput_Ulu_Cami_9621.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "changes": ["Boyutlandirildi", "Arayuzde kadraja uyarlandi"],
+      "usage": "Gercek dis yapi goruntusu; hero ve Butun yapi duragi"
+    },
+    {
+      "file": "minare.jpg",
+      "title": "Harput Ulu Cami 1128",
+      "creator": "Dosseman",
+      "year": 2006,
+      "source": "https://commons.wikimedia.org/wiki/File:Harput_Ulu_Cami_1128.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "changes": ["Boyutlandirildi"],
+      "usage": "Minare, geometrik tugla ve serefe gercek referansi"
+    },
+    {
+      "file": "avlu.jpg",
+      "title": "Harput Ulu Cami 1123",
+      "creator": "Dosseman",
+      "year": 2006,
+      "source": "https://commons.wikimedia.org/wiki/File:Harput_Ulu_Cami_1123.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "changes": ["Boyutlandirildi", "Arayuzde kadraja uyarlandi"],
+      "usage": "Ic avlu, revaklar ve modern koruyucu ortu"
+    },
+    {
+      "file": "harim.jpg",
+      "title": "Harput Ulu Cami 1120",
+      "creator": "Dosseman",
+      "year": 2006,
+      "source": "https://commons.wikimedia.org/wiki/File:Harput_Ulu_Cami_1120.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "changes": ["Boyutlandirildi"],
+      "usage": "Avluya acilan revak ayrintisi",
+      "limitation": "Dosya adi harim.jpg olsa da tam harim panoramasi degildir."
+    },
+    {
+      "file": "stone-surface.jpg",
+      "title": "Harput Ulu Cami 9621 fotografindan turetilmis tas yuzey",
+      "creator": "Dosseman (kaynak fotograf)",
+      "year": 2006,
+      "source": "https://commons.wikimedia.org/wiki/File:Harput_Ulu_Cami_9621.jpg",
+      "derivedFrom": "cami.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "changes": ["Kaynak fotografin tas duvar bolgesi kirpildi", "Dort yone aynalandi", "Tekrar edebilir doku olarak boyutlandirildi"],
+      "usage": "Temsili 3D mimaride tas yuzey dokusu",
+      "limitation": "Turetilmis doku, gercek yapinin birebir yuzey taramasi degildir."
+    }
+  ],
+  "retainedSources": [
+    {"file": "cami-original.jpg", "sourceAsset": "cami.jpg", "changes": [], "distributionRequired": false},
+    {"file": "minare-original.jpg", "sourceAsset": "minare.jpg", "changes": [], "distributionRequired": false}
+  ],
+  "externalMedia": [
+    {
+      "type": "youtube-embed",
+      "videoId": "jeS2PVqWVcQ",
+      "source": "https://www.youtube.com/watch?v=jeS2PVqWVcQ",
+      "embed": "https://www.youtube-nocookie.com/embed/jeS2PVqWVcQ?rel=0",
+      "creator": "Elazig Il Kultur ve Turizm Mudurlugu",
+      "year": 2021,
+      "localFile": null,
+      "changes": [],
+      "usage": "Kullanici actiginda dialog icinde gomulu resmi drone filmi",
+      "licenseNote": "Indirilmez. Kaynak yayin ve YouTube gomulu oynaticisi kosullarina tabidir; fotograflarin CC BY-SA lisansi bu videoya uygulanmaz."
+    }
+  ],
+  "modelNotice": "3D yapi, ic kesit ve minare temsili anlatimdir; olcum, rolove veya birebir dijital ikiz degildir. Avlu duraginda modern koruyucu ortu gizlenir."
+}
