@@ -22,7 +22,7 @@ Geliştirme bu GitHub reposu üzerinden sürdürülür. Barındırma servisi Nod
 
 ## Deneyim
 
-Beş durak aynı kamera, açıklama ve fotoğraf durumunu yönetir: **Bütün yapı**, **Avlu**, **Harim**, **Tuğla işçiliği**, **Şerefe**. 3D ile kaynak fotoğrafı arasında geçiş yapılabilir. Bakış sürgüsü ve sürükleme, düşey referans, akşam ışığı, sıfırlama ve tam ekran kontrolleri bulunur. Harita bağlantısı Harput Ulu Camii/Elazığ hedefini kullanır.
+Altı durak aynı kamera, açıklama ve fotoğraf durumunu yönetir: **Bütün yapı**, **Avlu**, **Harim**, **Tuğla işçiliği**, **Şerefe**, **Eğik dut**. 3D ile kaynak fotoğrafı arasında geçiş yapılabilir. Bakış sürgüsü ve sürükleme, düşey referans, akşam ışığı, sıfırlama ve tam ekran kontrolleri bulunur. Harita bağlantısı Harput Ulu Camii/Elazığ hedefini kullanır.
 
 `İçeride gez` seçeneği insan göz hizasında altı duraklı bir rota açar: giriş, eşik, avlu, revak, harim ve mihrap. Gezi oynatılabilir, duraklatılabilir, zaman çizgisinden aranabilir ve duraklar arasında atlanabilir. Fare veya dokunma sürüklemesi bakış yönünü sınırlı olarak değiştirir. `Gerçek görüntü` bağlantısı bulunduğun durağa ait lisanslı arşiv fotoğrafını açar. Düşük hareket tercihi açık olduğunda gezi otomatik başlamaz.
 
@@ -55,7 +55,9 @@ Repoda optimize edilmiş görseller bulunur. Görsel künyeleri sayfada, makine 
 
 [Drone filmi](https://www.youtube.com/watch?v=jeS2PVqWVcQ): Elazığ İl Kültür ve Turizm Müdürlüğü, 2021. YouTube gömme oynatıcısı üzerinden sunulur; yerel bir video varlığı veya CC BY-SA fotoğraf lisansının parçası değildir.
 
-`dist/assets/hero-drone.mp4`, kullanıcının sağladığı yerel `videoplayback.mp4` dosyasının baytları değiştirilmeden yeniden adlandırılmış kopyasıdır; bu çalışma sırasında indirilmedi veya yeniden kodlanmadı. Bu yerel dosya için eser sahibi veya yeniden dağıtım lisansı sağlanmamıştır; fotoğrafların CC BY-SA 4.0 lisansı videoyu kapsamaz. Yerel klibin alt bölümdeki YouTube kaydıyla aynı eser olduğu doğrulanmamıştır. Kamuya yeniden dağıtımdan önce kullanım hakları doğrulanmalıdır.
+`dist/assets/hero-drone.mp4`, kullanıcının sağladığı yerel `harput_son.mp4` dosyasından web kullanımı için üretilmiştir: 1280x720 H.264/yuv420p, 30 fps, CRF 26, sessiz ve fast-start. Kaynak video bu çalışma sırasında internetten indirilmemiştir. Bu yerel dosya için eser sahibi veya yeniden dağıtım lisansı sağlanmamıştır; fotoğrafların CC BY-SA 4.0 lisansı videoyu kapsamaz. Yerel klibin alt bölümdeki YouTube kaydıyla aynı eser olduğu doğrulanmamıştır. Kamuya yeniden dağıtımdan önce kullanım hakları doğrulanmalıdır.
+
+`dist/assets/egik-dut-reference.png`, kullanıcının sağladığı ve caminin güney/kıble duvarına bitişik eğik dutu gösteren görselin yeniden adlandırılmış kopyasıdır. Görsel, 3D dut durağının konum ve biçim referansıdır; eser sahibi, çekim tarihi veya yeniden dağıtım lisansı sağlanmamıştır.
 
 ## İçerik Kaynakları
 
@@ -68,4 +70,4 @@ Repoda optimize edilmiş görseller bulunur. Görsel künyeleri sayfada, makine 
 
 Yönergedeki kaynaklı araştırma ve özgün ekip markası çalışması korunmalıdır. Footer'da aynen `GakCoding örnek çalışmasıdır` ibaresi bulunur. Gerçek firma markası veya coğrafi işaret amblemi kullanılmaz. Genel ürün/sipariş şeması, bu kültürel miras konusu için zorunlu bir e-ticaret akışı olarak uygulanmamıştır.
 
-Yerel tarayıcıda beş durak, fotoğraf geçişi, ışık, düşey referans, tam ekran ve video oynatma kontrol edildi. Mobil ve tablet yerleşimleri incelendi. Gerçek telefonda dokunma, WebGL kapalı cihaz ve sayısal performans ölçümleri ayrıca doğrulanmalıdır.
+Yerel tarayıcıda altı durak, fotoğraf geçişi, ışık, düşey referans, tam ekran ve video oynatma kontrol edildi. Mobil ve tablet yerleşimleri incelendi. Gerçek telefonda dokunma, WebGL kapalı cihaz ve sayısal performans ölçümleri ayrıca doğrulanmalıdır.

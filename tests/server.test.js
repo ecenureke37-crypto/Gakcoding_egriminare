@@ -21,6 +21,11 @@ test('MP4 is served as video/mp4 with byte range support',async()=>{
  assert.equal(response.headers.get('accept-ranges'),'bytes');assert.ok(Number(response.headers.get('content-length'))>0);
 });
 
+test('user mulberry reference is served as a PNG image',async()=>{
+ const response=await fetch(`${base}/assets/egik-dut-reference.png`,{method:'HEAD'});
+ assert.equal(response.status,200);assert.equal(response.headers.get('content-type'),'image/png');
+});
+
 test('HEAD reports the full representation length without a response body',async()=>{
  const response=await fetch(`${base}/assets/cami.jpg`,{method:'HEAD'});
  assert.equal(response.status,200);assert.equal(response.headers.get('content-length'),String(bytes.length));

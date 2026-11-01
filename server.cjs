@@ -1,6 +1,6 @@
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
 const root=path.join(__dirname,'dist'),port=Number(process.env.PORT)||5182;
-const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.jpg':'image/jpeg','.json':'application/json; charset=utf-8','.mp4':'video/mp4'};
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.jpg':'image/jpeg','.png':'image/png','.json':'application/json; charset=utf-8','.mp4':'video/mp4'};
 
 function singleRange(value,size){
  const match=/^bytes=(\d*)-(\d*)$/.exec(value);

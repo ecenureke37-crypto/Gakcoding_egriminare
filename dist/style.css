@@ -28,6 +28,7 @@ html{scroll-behavior:auto}.discovery:fullscreen{padding-top:0;background:var(--p
 @media(min-width:901px) and (max-height:720px){.hero-content{padding-top:48px;padding-bottom:105px}.hero-place{margin-bottom:18px}.hero-content h1{font-size:60px;margin-bottom:20px}.hero-subtitle{font-size:18px;margin-bottom:20px}.hero-bottom{bottom:18px}}
 
 :root{--coal:#28272b;--limestone:#f5f4f1;--brick:#a45f49;--mulberry:#762d48;--sky:#dce8ed;--ink:var(--coal);--paper:var(--limestone);--sage:#e7e4df;--accent:var(--mulberry);--line:#cfceca;--muted:#60636a}
+@media(min-width:901px){.explorer[data-view=mulberry]:not([data-tour=true]) #scene{left:320px}.explorer[data-view=mulberry] .stage-caption{max-width:245px}}
 .site-header{border-color:var(--line)}.brand span{border-color:#98979a}
 .hero{height:calc(100svh - 220px);min-height:450px;background:var(--coal)}
 .hero:after{background:linear-gradient(90deg,rgba(28,26,30,.82),rgba(28,26,30,.48) 46%,rgba(28,26,30,.12) 80%),linear-gradient(0deg,rgba(28,26,30,.7),transparent 38%)}

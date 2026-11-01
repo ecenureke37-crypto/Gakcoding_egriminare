@@ -6,3 +6,8 @@ node_modules/
 .DS_Store
 Thumbs.db
 dist/assets/*-original.jpg
+.playwright-cli/
+output/playwright/
+.vercel/
+
+.vercel

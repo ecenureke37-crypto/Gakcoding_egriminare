@@ -73,17 +73,29 @@
       "changes": ["Kaynak fotografin tas duvar bolgesi kirpildi", "Dort yone aynalandi", "Tekrar edebilir doku olarak boyutlandirildi"],
       "usage": "Temsili 3D mimaride tas yuzey dokusu",
       "limitation": "Turetilmis doku, gercek yapinin birebir yuzey taramasi degildir."
+    },
+    {
+      "file": "egik-dut-reference.png",
+      "title": "Harput Ulu Camii guney duvarindaki egik dut",
+      "creator": null,
+      "year": null,
+      "source": "User-supplied image: codex-clipboard-e198813b-a37d-45b2-853e-387fdf90c619.png",
+      "license": null,
+      "licenseNote": "No creator or redistribution license was supplied. Confirm rights before public redistribution.",
+      "changes": ["Copied byte-for-byte and renamed; no visual transformation"],
+      "usage": "Egik dut 3D duraginin gercek fotograf referansi",
+      "limitation": "Konum ve govde formu icin gorsel referanstir; tarih veya botanik tur kaniti degildir."
     }
   ],
   "videos": [
     {
       "file": "hero-drone.mp4",
       "title": "User-supplied Harput drone clip",
-      "source": "User-supplied local file: videoplayback.mp4",
+      "source": "User-supplied local file: harput_son.mp4",
       "creator": null,
       "license": null,
       "licenseNote": "No creator or redistribution license was supplied. This asset is not covered by the photographs' CC BY-SA 4.0 license. Confirm rights before public redistribution.",
-      "changes": ["Copied byte-for-byte and renamed from videoplayback.mp4; no transcoding or downloading"],
+      "changes": ["Transcoded from 1920x1080 H.264/AAC to 1280x720 H.264 yuv420p at 30 fps", "Audio removed", "CRF 26", "Fast-start metadata moved before media data"],
       "usage": "Decorative muted looping inline hero background; cami.jpg remains the poster and fallback. No video source is attached under reduced motion or Save-Data."
     }
   ],

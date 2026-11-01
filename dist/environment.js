@@ -6,6 +6,16 @@ export function createEnvironment(T) {
   const bark = new T.MeshStandardMaterial({ color: 0x625d4d, roughness: 1 });
   const soil = new T.MeshStandardMaterial({ color: 0x9b9e8c, roughness: 1 });
   const path = new T.MeshStandardMaterial({ color: 0xb9b8a8, roughness: .98 });
+  const oldBark = new T.MeshStandardMaterial({ color: 0x625440, roughness: 1 });
+  const barkCanvas = document.createElement('canvas'); barkCanvas.width = barkCanvas.height = 256;
+  const barkContext = barkCanvas.getContext('2d'); barkContext.fillStyle = '#b7aa8c'; barkContext.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 540; i++) {
+    barkContext.fillStyle = i % 3 ? '#796e59' : '#d0c4a7';
+    barkContext.fillRect(random() * 256, random() * 256, .5 + random() * 2, 5 + random() * 48);
+  }
+  oldBark.map = new T.CanvasTexture(barkCanvas); oldBark.map.colorSpace = T.SRGBColorSpace;
+  const surroundBrick = new T.MeshStandardMaterial({ color: 0x9a7158, roughness: .98 });
+  const darkEarth = new T.MeshStandardMaterial({ color: 0x49483d, roughness: 1 });
   const ground = new T.Mesh(new T.PlaneGeometry(31, 29), soil); ground.rotation.x = -Math.PI / 2; ground.position.set(-1.5, -.355, 1); ground.receiveShadow = true; group.add(ground);
   const approach = new T.Mesh(new T.PlaneGeometry(7.8, 1.5), path); approach.rotation.x = -Math.PI / 2; approach.position.set(5.3, -.345, -.05); approach.receiveShadow = true; group.add(approach);
   function leafTexture(needle = false) {
@@ -64,14 +74,103 @@ export function createEnvironment(T) {
     leaves.forEach(([lx, ly, lz, size, angle], i) => { dummy.position.set(lx, ly, lz); dummy.rotation.set((random() - .5) * 2.2, angle, (random() - .5) * 1.6); dummy.scale.set(size, evergreen ? size * .68 : size * 1.4, 1); dummy.updateMatrix(); foliage.setMatrixAt(i, dummy.matrix); foliage.setColorAt(i, new T.Color().setHSL(evergreen ? .36 + random() * .035 : .24 + random() * .055, .18 + random() * .15, .62 + random() * .22)); });
     foliage.castShadow = true; foliage.receiveShadow = true; crown.add(foliage);
   }
+  function makeMulberry() {
+    const tree = new T.Group();
+    tree.name = 'Egik dut - Ulu Agac';
+    tree.position.set(-2, -.32, -4.7);
+    tree.userData = {
+      kind: 'mulberry',
+      representation: 'Guney duvarina bitisik egik dutun fotograf ve kaynaklardan gelistirilmis olcusuz temsili.'
+    };
+    group.add(tree);
+
+    const surround = new T.Group(); surround.name = 'Egik dut koruyucu cevresi'; tree.add(surround);
+    const border = new T.Shape(); border.absellipse(0, 0, 1.7, .7, 0, Math.PI * 2, false);
+    const hollow = new T.Path(); hollow.absellipse(0, 0, 1.49, .49, 0, Math.PI * 2, true); border.holes.push(hollow);
+    const brickRing = new T.Mesh(new T.ExtrudeGeometry(border, {depth:.23, bevelEnabled:false, curveSegments:48}), surroundBrick);
+    brickRing.rotation.x = -Math.PI / 2; brickRing.position.y = .015;
+    brickRing.castShadow = brickRing.receiveShadow = true; surround.add(brickRing);
+    const bed = new T.Mesh(new T.CircleGeometry(1.22, 48), darkEarth);
+    bed.rotation.x = -Math.PI / 2; bed.scale.set(1.35, .55, 1); bed.position.y = .155; bed.receiveShadow = true; surround.add(bed);
+
+    const rootMass = new T.Mesh(new T.SphereGeometry(1, 18, 10), oldBark);
+    rootMass.scale.set(1.38, .34, .62); rootMass.position.set(-.05, .25, .02);
+    rootMass.castShadow = rootMass.receiveShadow = true; rootMass.userData.part = 'mulberry-root'; tree.add(rootMass);
+
+    const trunkPoints = [
+      [[-1.3,.18,.02],[-.5,.26,.08],[.25,.7,.12],[.6,1.9,.28],[1,3.15,.34]],
+      [[-.9,.2,.1],[.2,.33,.03],[1.05,.6,.2],[1.8,1.5,.43],[2.25,3.02,.58]],
+      [[-1.1,.18,-.03],[-.3,.27,-.25],[.3,.7,-.55],[.5,1.9,-.95],[.8,3.1,-1.2]]
+    ];
+    trunkPoints.forEach((points, index) => {
+      const curve = new T.CatmullRomCurve3(points.map(point => new T.Vector3(...point)), false, 'catmullrom', .32);
+      const geometry = new T.TubeGeometry(curve, 40, .29 - index * .04, 10, false);
+      const positions = geometry.attributes.position;
+      // Vary each cross-section around its centre so roots thicken and branch tips taper.
+      for (let ring = 0; ring <= 40; ring++) {
+        const t = ring / 40, centre = curve.getPointAt(t);
+        const taper = (1.35 - t * 1.1) * (1 + Math.sin(t * 27 + index) * .065);
+        for (let side = 0; side <= 10; side++) {
+          const vertex = ring * 11 + side;
+          positions.setXYZ(vertex,
+            centre.x + (positions.getX(vertex) - centre.x) * taper,
+            centre.y + (positions.getY(vertex) - centre.y) * taper,
+            centre.z + (positions.getZ(vertex) - centre.z) * taper);
+        }
+      }
+      geometry.computeVertexNormals();
+      const trunk = new T.Mesh(geometry, oldBark);
+      trunk.castShadow = trunk.receiveShadow = true; trunk.userData.part = 'mulberry-trunk'; tree.add(trunk);
+    });
+
+    // Low secondary limbs keep the photographed crown wide without multiplying draw calls.
+    const limbs = new T.Group(); limbs.name = 'Egik dut ikincil dallari'; tree.add(limbs);
+    const limbStarts = [trunkPoints[0][2], trunkPoints[0][3], trunkPoints[1][2], trunkPoints[1][3], trunkPoints[2][2], trunkPoints[2][3]];
+    const crownCenters = [
+      [-1.9,3.05,.25],[-1.1,3.35,-.1],[-.45,3.45,.05],[.55,3.55,-.18],[1.65,3.48,.25],[2.7,3.35,.58],
+      [-1.35,3.15,1.0],[.15,3.25,1.05],[1.5,3.15,-1.0]
+    ];
+    limbStarts.forEach((start, index) => {
+      const end = crownCenters[(index * 2 + 1) % crownCenters.length];
+      const mid = [(start[0] + end[0]) * .5, Math.max(start[1], end[1]) + .15, (start[2] + end[2]) * .5];
+      const curve = new T.CatmullRomCurve3([new T.Vector3(...start), new T.Vector3(...mid), new T.Vector3(...end)]);
+      const limb = new T.Mesh(new T.TubeGeometry(curve, 10, .065, 6, false), oldBark);
+      limb.castShadow = true; limb.userData.part = 'mulberry-limb'; limbs.add(limb);
+    });
+
+    const crown = new T.Group(); crown.name = 'Egik dut yaprak taclari'; tree.add(crown); swaying.push({ crown, phase: 5.6 });
+    const leaves = [];
+    for (const [cx, cy, cz] of crownCenters) {
+      for (let i = 0; i < 38; i++) {
+        const phi = random() * Math.PI * 2, radial = Math.sqrt(random());
+        leaves.push([
+          cx + Math.cos(phi) * radial * .78,
+          cy + (random() - .48) * .95,
+          cz + Math.sin(phi) * radial * .62,
+          .19 + random() * .24,
+          random() * Math.PI * 2
+        ]);
+      }
+    }
+    const foliage = new T.InstancedMesh(leafGeometry, leafMaterial, leaves.length);
+    leaves.forEach(([lx, ly, lz, size, angle], i) => {
+      dummy.position.set(lx, ly, lz); dummy.rotation.set((random() - .5) * 1.8, angle, (random() - .5) * 1.3);
+      dummy.scale.set(size, size * 1.38, 1); dummy.updateMatrix(); foliage.setMatrixAt(i, dummy.matrix);
+      foliage.setColorAt(i, new T.Color().setHSL(.245 + random() * .045, .25 + random() * .14, .55 + random() * .2));
+    });
+    foliage.castShadow = foliage.receiveShadow = true; crown.add(foliage);
+    return tree;
+  }
   // Keep the west entry approach clear; planted edges frame the monument instead of covering it.
   makeTree(-8.1, 3.9, 6.8, true, .3);
   makeTree(5.6, 7.5, 7.5, true, 1.7);
   makeTree(-7.8, -4.6, 5.3, false, 3.1);
   makeTree(7.8, -4.3, 4.7, false, 4.5);
+  const mulberry = makeMulberry();
+  const mulberryFocus = new T.Vector3(-2, 1.35, -4.7);
   function update(time) {
     for (const { crown, phase } of swaying) { crown.rotation.z = Math.sin(time * .34 + phase) * .0035; crown.rotation.x = Math.sin(time * .27 + phase) * .002; }
   }
-  group.userData.representation = 'Fotograftaki agac turu ve konum iliskilerinden olcusuz, sade yakin cevre; gercek peyzaj rolovesi degildir.';
-  return { group, update };
+  group.userData.representation = 'Fotograftaki agac turu ve konum iliskilerinden olcusuz, sade yakin cevre; egik dut guney duvari kaynaklarina gore yerlestirilmistir. Gercek peyzaj rolovesi degildir.';
+  return { group, update, mulberry, mulberryFocus };
 }

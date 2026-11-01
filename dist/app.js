@@ -12,7 +12,7 @@ createHeroMedia({video:$('#hero-video'),button:$('#hero-media-toggle'),hero:$('.
  motion:matchMedia('(prefers-reduced-motion: reduce)'),connection:navigator.connection,IntersectionObserver:window.IntersectionObserver});
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const mobile=()=>innerWidth<=900;
-const order=['whole','courtyard','interior','brick','balcony'];
+const order=['whole','courtyard','interior','brick','balcony','mulberry'];
 const state={view:'whole',mode:'model',touring:false,evening:false,visited:new Set(['whole'])};
 let renderer,scene,camera,controls,building,tower,environment,referenceLine,keyLight,fillLight,animation,lastFrame=0;
 const tour=createTourPlayer(T),lookOffset=new T.Euler(0,0,0,'YXZ'),lookRotation=new T.Quaternion();
@@ -24,18 +24,21 @@ const photos={
  courtyard:{src:'assets/avlu.jpg',alt:'İç avluda taş payeler, sivri tuğla kemerler ve koruyucu cam örtü',caption:'İç avlu ve koruyucu örtü. Dosseman, 9 Eylül 2006. CC BY-SA 4.0.'},
  interior:{src:'assets/ic-mekan.jpg',alt:'Harput Ulu Camii hariminde açık renk payeler, tuğla kemerler, mihrap ve ahşap minber',caption:'Gerçek harim, mihrap ve minber yönü. Dosseman, 2006. CC BY-SA 4.0.'},
  brick:{src:'assets/minare.jpg',alt:'Minarenin geometrik tuğla işçiliği ve aşınmış harcı',caption:'Minare ayrıntısı. Dosseman, 9 Eylül 2006. CC BY-SA 4.0.'},
- balcony:{src:'assets/minare.jpg',alt:'Eğri Minare tek taş şerefesi ve kısa üst gövdesi',caption:'Şerefe ve üst gövde. Dosseman, 9 Eylül 2006. CC BY-SA 4.0.'}
+ balcony:{src:'assets/minare.jpg',alt:'Eğri Minare tek taş şerefesi ve kısa üst gövdesi',caption:'Şerefe ve üst gövde. Dosseman, 9 Eylül 2006. CC BY-SA 4.0.'},
+ mulberry:{src:'assets/egik-dut-reference.png',alt:'Harput Ulu Camii güney duvarına bitişik, kökleri yatay uzanan eğik dut ağacı',caption:'Eğik dut ağacı. Kullanıcı tarafından sağlanan referans; eser sahibi ve lisans belirtilmedi.'}
 };
 const presets={
  whole:{target:[-1.6,3.3,1],offset:[23,13.8,-16]},
  courtyard:{target:[-2,1.4,2.55],offset:[5.8,9,7.6]},
  interior:{target:[-2,1.0,-1.5],offset:[8.2,10.5,-11.4]},
  brick:{target:[1.14,4.7,2.25],offset:[6.5,1.1,8]},
- balcony:{target:[.85,8.7,2.25],offset:[4.2,.8,6.2]}
+ balcony:{target:[.85,8.7,2.25],offset:[4.2,.8,6.2]},
+ mulberry:{target:[-2,1.8,-4.7],offset:[13,6,-15]}
 };
-const spots={courtyard:new T.Vector3(-2,2.2,2.55),interior:new T.Vector3(-2,3.6,-2.1),brick:new T.Vector3(1.2,6.1,2.25)};
+const spots={courtyard:new T.Vector3(-2,2.2,2.55),interior:new T.Vector3(-2,3.6,-2.1),brick:new T.Vector3(1.2,6.1,2.25),mulberry:new T.Vector3(-2,1.6,-4.7)};
 
 function renderContent(){
+ stage.dataset.view=state.view;
  const chapter=chapters[state.view], image=photos[state.view];
  $('#chapter-label').textContent=chapter.label;
  $('#chapter-title').textContent=chapter.title;
@@ -46,7 +49,7 @@ function renderContent(){
  $('#reference-caption').textContent=image.caption;
  document.querySelectorAll('[data-view]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.view===state.view));b.dataset.visited=String(state.visited.has(b.dataset.view))});
  document.querySelectorAll('[data-spot]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.spot===state.view)));
- $('#model-note').textContent=state.view==='interior'?'Temsili iç kesit. Çatı ve bazı duvarlar, mekân ilişkilerini göstermek için kaldırıldı.':state.view==='courtyard'?'Mekânsal düzeni göstermek için koruyucu cam örtü bu görünümde gizlenir. Temsili modeldir.':'Fotoğraf ve plan kaynaklarından geliştirilmiş temsili model. Rölöve değildir.';
+ $('#model-note').textContent=state.view==='interior'?'Temsili iç kesit. Çatı ve bazı duvarlar, mekân ilişkilerini göstermek için kaldırıldı.':state.view==='courtyard'?'Mekânsal düzeni göstermek için koruyucu cam örtü bu görünümde gizlenir. Temsili modeldir.':state.view==='mulberry'?'Fotoğraf ve kaynaklardaki konumdan geliştirilmiş temsili eğik dut. Botanik veya peyzaj rölövesi değildir.':'Fotoğraf ve plan kaynaklarından geliştirilmiş temsili model. Rölöve değildir.';
  const datumRelevant=['whole','brick','balcony'].includes(state.view);
  $('#datum').disabled=!datumRelevant;
  if(referenceLine)referenceLine.visible=datumRelevant&&$('#datum').checked;
@@ -54,7 +57,7 @@ function renderContent(){
 function cameraPose(view){
  const p=presets[view],target=new T.Vector3(...p.target),offset=new T.Vector3(...p.offset);
  if(mobile())offset.multiplyScalar(view==='whole'?1:1.03);
- else{
+ else if(view!=='mulberry'){
   const right=new T.Vector3().crossVectors(offset,new T.Vector3(0,1,0)).normalize().negate();
   target.addScaledVector(right,view==='whole'?-2.2:-1.65);
  }

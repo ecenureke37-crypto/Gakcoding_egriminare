@@ -2,6 +2,7 @@ const inventory = 'https://www.kulturportali.gov.tr/turkiye/elazig/kulturenvante
 const localCulture = 'https://elazig.ktb.gov.tr/TR-187349/harput.html';
 const academic = 'https://isamveri.org/pdfdrg/D03965/2014_2/2014_2_UZUNC.pdf';
 const encyclopedia = 'https://islamansiklopedisi.org.tr/ulucami#25-harput-ulucamii';
+const mulberryLegend = 'https://www.kulturportali.gov.tr/turkiye/elazig/kulturatlasi/secde-eden-dut-agaci-efsanesi';
 
 export const chapters = {
   whole: {
@@ -44,6 +45,14 @@ export const chapters = {
     sourceLabel: 'Kültür Portalı · Genel tanım',
     confidence: 'Yüksek; restorasyonun kapsamı dışında ayrıntı eklenmedi.',
     note: 'Eğim açısı ve Pisa karşılaştırması için aynı yöntemle yapılmış ölçüm doğrulanmadı. Sanal model açı ölçümü değildir.'
+  },
+  mulberry: {
+    label: 'Eğik dut',
+    title: 'Mihrabın ardındaki Ulu Ağaç.',
+    paragraph: 'Dut ağacı, mihrabın dışındaki güney kıble duvarına bitişiktir. Kadir Gecesi minareyle birlikte secde edercesine eğildiği anlatısı tarihsel bir olay değil, Harput sözlü kültüründe yaşayan bir rivayettir.',
+    source: mulberryLegend,
+    sourceLabel: 'Kültür Portalı · Secde Eden Dut Ağacı Efsanesi',
+    confidence: 'Konum resmî kaynaklarla uyumludur; secde anlatısı halk anlatısıdır.'
   }
 };
 
