@@ -151,7 +151,7 @@ function updateTourUI(){
  if(lastTourStop!==index){
   $('#tour-stop-label').textContent=String(index+1).padStart(2,'0')+' / 06 · '+stop.label;
   $('#tour-stop-title').textContent=stop.title;$('#tour-stop-text').textContent=stop.text;
-  document.querySelectorAll('[data-tour-stop]').forEach(b=>{const active=Number(b.dataset.tourStop)===index;b.setAttribute('aria-pressed',String(active));if(active)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current')});
+  document.querySelectorAll('[data-tour-stop]').forEach(b=>{const active=Number(b.dataset.tourStop)===index;b.setAttribute('aria-pressed',String(active));if(active){b.setAttribute('aria-current','step');const route=$('#tour-stops');route.scrollTo({left:b.offsetLeft-(route.clientWidth-b.offsetWidth)/2,behavior:reduced?'auto':'smooth'})}else b.removeAttribute('aria-current')});
   lastTourStop=index;
  }
  $('#tour-progress').value=Math.round(tour.time/tourDuration*1000);
@@ -191,7 +191,7 @@ $('#tour-play').onclick=()=>{if(tour.playing)tour.pause();else tour.play();dirty
 $('#tour-prev').onclick=()=>moveTour(tour.time>tourStops[tour.stopIndex].time+.5?tour.stopIndex:tour.stopIndex-1);
 $('#tour-next').onclick=()=>moveTour(tour.stopIndex+1);
 $('#tour-progress').oninput=e=>{tour.pause();tour.seek(Number(e.target.value)/1000*tourDuration);lookOffset.set(0,0,0);dirty=true;updateTourUI()};
-host.addEventListener('keydown',e=>{if(!state.touring)return;if(e.key===' '){e.preventDefault();$('#tour-play').click()}else if(e.key==='ArrowRight'){e.preventDefault();moveTour(tour.stopIndex+1)}else if(e.key==='ArrowLeft'){e.preventDefault();moveTour(tour.stopIndex-1)}else if(e.key==='Escape'){exitTour();$('#start-tour').focus({preventScroll:true})}});
+stage.addEventListener('keydown',e=>{if(!state.touring)return;if(e.key==='Escape'){e.preventDefault();exitTour();$('#start-tour').focus({preventScroll:true});return}if(e.target.closest('button,a,input'))return;if(e.key===' '){e.preventDefault();$('#tour-play').click()}else if(e.key==='ArrowRight'){e.preventDefault();moveTour(tour.stopIndex+1)}else if(e.key==='ArrowLeft'){e.preventDefault();moveTour(tour.stopIndex-1)}});
 const tourPhoto=$('#tour-photo-dialog');
 $('#tour-reference').onclick=e=>{
  e.preventDefault();tour.pause();updateTourUI();

@@ -152,14 +152,50 @@ export function createArchitecture(T) {
   // The small central open court is surrounded by arcades, not an enormous roof void.
   const courtyardCenter = new T.Vector3(-2.0, .08, 2.55);
   box(-2, .075, 2.55, 2.45, .035, 2.8, paving);
+  // Archive courtyard photo: a low circular stone curb, dark cover and a short pipe.
+  const courtyardWaterFeature = new T.Group(); courtyardWaterFeature.name = 'Avlu su ogesi - fotograf referansi';
+  courtyardWaterFeature.position.set(-2, .095, 2.55); group.add(courtyardWaterFeature);
+  courtyardWaterFeature.userData.representation = 'Fotograftaki kapakli su ogesinin temsili; kuyu ya da sarnic islevi dogrulanmadi.';
+  const curb = new T.Mesh(new T.CylinderGeometry(.275, .3, .24, 24), ashlar);
+  curb.position.y = .12; curb.castShadow = curb.receiveShadow = true; courtyardWaterFeature.add(curb);
+  const coverMaterial = new T.MeshStandardMaterial({color:0x514f46,roughness:.88,metalness:.15});
+  const cover = new T.Mesh(new T.CylinderGeometry(.257, .257, .018, 24), coverMaterial);
+  cover.position.y = .248; cover.castShadow = cover.receiveShadow = true; courtyardWaterFeature.add(cover);
+  const coverRim = new T.Mesh(new T.TorusGeometry(.266, .013, 6, 32), ashlar);
+  coverRim.rotation.x = Math.PI / 2; coverRim.position.y = .245; courtyardWaterFeature.add(coverRim);
+  for(const x of[-.105,.105]) {
+    box(x,.28,0,.012,.055,.012,coverMaterial,courtyardWaterFeature);
+    box(x,.307,.025,.012,.012,.065,coverMaterial,courtyardWaterFeature);
+  }
+  const pipe = new T.Mesh(new T.CylinderGeometry(.018,.018,.17,10), new T.MeshStandardMaterial({color:0x527f79,roughness:.84,metalness:.08}));
+  pipe.position.set(.294,.12,.035);pipe.rotation.z=-Math.PI/2;pipe.castShadow=true;courtyardWaterFeature.add(pipe);
   arches([[-2.65, 0, 1.02], [-1.3, 0, 1.02], [-2.65, 0, 3.92], [-1.3, 0, 3.92]], 1.08);
   arches([[-3.36, 0, 1.9], [-3.36, 0, 3.25], [-.64, 0, 1.9], [-.64, 0, 3.25]], 1.08, Math.PI / 2);
   // Southern intermediate bay and the northern two transverse vaulted bays.
   arches([[-4.75, 0, .13], [-3.3, 0, .13], [-1.85, 0, .13], [-.4, 0, .13], [.95, 0, .13]], 1.13);
   const prayerCenter = new T.Vector3(-2, 1.25, -2.25);
-  box(-2, 1.03, -3.48, 1.05, 2.06, .22, plaster);
-  const niche = new T.Mesh(new T.SphereGeometry(.34, 20, 16, 0, Math.PI), new T.MeshStandardMaterial({color:0xbeb9aa,roughness:1,side:T.DoubleSide}));
-  niche.scale.set(1, 2.05, .45); niche.position.set(-2, 1.07, -3.355); niche.rotation.y = Math.PI; group.add(niche);
+  // A recessed arch with flat, matte plaster surfaces, rather than a convex sphere on the wall.
+  const mihrab = new T.Group(); mihrab.name = 'Mat sivali sivri kemerli mihrap nisi'; mihrab.position.x = -2; group.add(mihrab);
+  function pointedNicheShape(halfWidth,base,spring,crown) {
+    const shape = new T.Shape();shape.moveTo(-halfWidth,base);shape.lineTo(halfWidth,base);shape.lineTo(halfWidth,spring);
+    shape.quadraticCurveTo(halfWidth,crown-.27,0,crown);shape.quadraticCurveTo(-halfWidth,crown-.27,-halfWidth,spring);shape.closePath();return shape;
+  }
+  const nicheOpening = pointedNicheShape(.315,.17,1.18,1.92);
+  const frameShape = pointedNicheShape(.54,.08,1.23,2.13);
+  const openingPath = new T.Path();openingPath.setFromPoints(nicheOpening.getPoints(20));frameShape.holes.push(openingPath);
+  const nicheFrame = new T.Mesh(new T.ExtrudeGeometry(frameShape,{depth:.15,bevelEnabled:false,curveSegments:20}),plaster);
+  nicheFrame.position.z = -3.40;nicheFrame.castShadow=nicheFrame.receiveShadow=true;mihrab.add(nicheFrame);
+  const nicheBackMaterial = new T.MeshStandardMaterial({color:0xaaa492,roughness:1,metalness:0,bumpMap,bumpScale:.006});
+  const nicheBack = new T.Mesh(new T.ShapeGeometry(nicheOpening,20),nicheBackMaterial);nicheBack.position.z=-3.553;nicheBack.receiveShadow=true;mihrab.add(nicheBack);
+  const revealVertices=[],revealUVs=[],revealIndices=[],edgePoints=nicheOpening.getPoints(20);
+  for(let i=0;i<edgePoints.length;i++) {
+    const p=edgePoints[i];revealVertices.push(p.x,p.y,-3.249,p.x*.88,p.y,-3.552);revealUVs.push(i/edgePoints.length,0,i/edgePoints.length,1);
+    if(i<edgePoints.length-1){const a=i*2;revealIndices.push(a,a+1,a+2,a+2,a+1,a+3);}
+  }
+  const revealGeometry=new T.BufferGeometry();revealGeometry.setAttribute('position',new T.Float32BufferAttribute(revealVertices,3));revealGeometry.setAttribute('uv',new T.Float32BufferAttribute(revealUVs,2));revealGeometry.setIndex(revealIndices);revealGeometry.computeVertexNormals();
+  const revealMaterial=plaster.clone();revealMaterial.side=T.DoubleSide;
+  const reveal=new T.Mesh(revealGeometry,revealMaterial);reveal.castShadow=reveal.receiveShadow=true;mihrab.add(reveal);
+  box(0,.125,-3.39,.74,.08,.34,ashlar,mihrab);
   // The archive interior shows a restrained dark timber minber beside the pale mihrab.
   const timber = new T.MeshStandardMaterial({color:0x51402c,roughness:.85});
   const minber = new T.Group(); minber.name = 'Arsiv fotografini yorumlayan ahsap minber'; group.add(minber);
@@ -219,5 +255,5 @@ export function createArchitecture(T) {
   box(1.84, 2.87, 1, .48, .13, 10.05, ashlar, cutWalls);
   group.userData.minaretBase = new T.Vector3(1.47, 0, 2.25);
   const walkRoute = [new T.Vector3(5, 1.25, -.05), new T.Vector3(2.35, 1.25, -.05), new T.Vector3(1.1, 1.25, -.28), new T.Vector3(.55, 1.25, -.78), new T.Vector3(-1.3, 1.25, -.78), new T.Vector3(-1.3, 1.25, -2.66), new T.Vector3(-2.1, 1.25, -2.8)];
-  return { group, roof, cutWalls, courtyardCenter, prayerCenter, modernCover, entranceDoor, interiorLights, walkRoute };
+  return { group, roof, cutWalls, courtyardCenter, prayerCenter, modernCover, entranceDoor, interiorLights, walkRoute, courtyardWaterFeature, mihrab };
 }

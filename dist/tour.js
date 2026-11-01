@@ -3,10 +3,10 @@ export const tourDuration=80;
 export const tourStops=[
  {id:'arrival',time:0,label:'Giriş',title:'Harput’un taş eşiğinde.',text:'Taş beden duvarı, tuğla minare ve giriş cephesi. Yapıya bu kez dışarıdan bakmakla yetinmeyip içeriye ilerliyoruz.',position:[6,1.45,-.05],target:[1.6,1.4,-.05],photo:'whole',source:inventory},
  {id:'threshold',time:12,label:'Eşik',title:'Dışarıdaki ses geride kalır.',text:'Batı girişi, kalın duvarların içindeki mekânlara açılır. Revaklar, avlu ile kapalı bölümler arasında bir geçiş kurar.',position:[.7,1.3,-.05],target:[-2,1.35,1],photo:'courtyard',source:inventory},
- {id:'court',time:28,label:'Avlu',title:'Kemerlerin arasında ışık.',text:'İç avluyu çevreleyen sivri kemerler, taş payelerin üzerine oturur. Koruyucu cam örtü bu gezide yerinde tutulur; tarihî planda burası açık avludur.',position:[-2.65,1.3,2.4],target:[-1.5,1.65,3.85],photo:'courtyard',source:inventory},
+ {id:'court',time:28,label:'Avlu',title:'Kemerlerin arasında ışık.',text:'Sivri tuğla kemerler taş payelere oturur. Ortadaki alçak, kapaklı su öğesi fotoğrafa göre temsilen gösterilir; özgün işlevi kesinleştirilmemiştir.',position:[-2.75,1.3,2.15],target:[-2,0.55,2.55],photo:'courtyard',source:inventory},
  {id:'arcade',time:42,label:'Revak',title:'Taşın taşıdığı ritim.',text:'Avlunun çevresinde ışık ve gölge değişir. Tuğla kemerlerin altında ilerlerken, yapının içe dönük düzeni okunur.',position:[-4.35,1.3,3.25],target:[-4.75,1.35,.2],photo:'interior',source:inventory},
  {id:'prayer',time:58,label:'Harim',title:'Payeler arasında.',text:'Mihraba paralel iki sahın, kütlesel payeler ve beşik tonozlarla biçimlenir. Çatı artık bir kesit değil, başımızın üzerindeki mekândır.',position:[-4.3,1.3,-2.6],target:[-2,1.5,-2.5],photo:'interior',source:inventory},
- {id:'mihrab',time:72,label:'Mihrap',title:'Yönün ve mekânın odağı.',text:'Mihrap önündeki küçük kubbe, harimin örtü düzeninde farklılaşır. Bu dijital ziyaret, gerçek yapının mekânsal ilişkilerini kaynaklarla anlatan bir yorumdur.',position:[-2.2,1.3,-2.75],target:[-2,1.3,-3.5],photo:'interior',source:inventory}
+ {id:'mihrab',time:72,label:'Mihrap',title:'Yönün ve mekânın odağı.',text:'Sığ, sıvalı mihrap nişi ve yanındaki ahşap minber aynı duvarda okunur. Mihrap önündeki küçük kubbe, harimin örtü düzeninde farklılaşır.',position:[-2.75,1.38,-1.55],target:[-1.75,1.28,-3.45],photo:'interior',source:inventory}
 ];
 
 const viaPoints=[
@@ -14,7 +14,7 @@ const viaPoints=[
  [[-.4,1.3,-.45],[-1.85,1.3,-.45],[-1.3,1.3,1.4]],
  [[-2.8,1.3,3.25],[-3.4,1.3,3.25]],
  [[-4.75,1.3,.65],[-4.75,1.3,.1],[-5.05,1.3,-1.3],[-5.05,1.3,-2.3]],
- []
+ [[-3.55,1.34,-2.35],[-2.75,1.37,-2.22]]
 ];
 
 export function createTourPlayer(T){
