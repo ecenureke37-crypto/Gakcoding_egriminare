@@ -75,6 +75,18 @@
       "limitation": "Turetilmis doku, gercek yapinin birebir yuzey taramasi degildir."
     }
   ],
+  "videos": [
+    {
+      "file": "hero-drone.mp4",
+      "title": "User-supplied Harput drone clip",
+      "source": "User-supplied local file: videoplayback.mp4",
+      "creator": null,
+      "license": null,
+      "licenseNote": "No creator or redistribution license was supplied. This asset is not covered by the photographs' CC BY-SA 4.0 license. Confirm rights before public redistribution.",
+      "changes": ["Copied byte-for-byte and renamed from videoplayback.mp4; no transcoding or downloading"],
+      "usage": "Decorative muted looping inline hero background; cami.jpg remains the poster and fallback. No video source is attached under reduced motion or Save-Data."
+    }
+  ],
   "retainedSources": [
     {"file": "cami-original.jpg", "sourceAsset": "cami.jpg", "changes": [], "distributionRequired": false},
     {"file": "minare-original.jpg", "sourceAsset": "minare.jpg", "changes": [], "distributionRequired": false}

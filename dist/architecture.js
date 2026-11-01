@@ -253,7 +253,7 @@ export function createArchitecture(T) {
   box(-2, 2.87, 5.84, 7.6, .13, .48, ashlar);
   box(-2, 2.87, -3.84, 7.6, .13, .48, ashlar, cutWalls);
   box(1.84, 2.87, 1, .48, .13, 10.05, ashlar, cutWalls);
-  group.userData.minaretBase = new T.Vector3(1.47, 0, 2.25);
+  group.userData.minaretBase = new T.Vector3(.9, 0, 2.25);
   const walkRoute = [new T.Vector3(5, 1.25, -.05), new T.Vector3(2.35, 1.25, -.05), new T.Vector3(1.1, 1.25, -.28), new T.Vector3(.55, 1.25, -.78), new T.Vector3(-1.3, 1.25, -.78), new T.Vector3(-1.3, 1.25, -2.66), new T.Vector3(-2.1, 1.25, -2.8)];
   return { group, roof, cutWalls, courtyardCenter, prayerCenter, modernCover, entranceDoor, interiorLights, walkRoute, courtyardWaterFeature, mihrab };
 }

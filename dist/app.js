@@ -5,8 +5,11 @@ import {createMinaret} from './minaret.js';
 import {chapters} from './story-content.js';
 import {createEnvironment} from './environment.js';
 import {createTourPlayer,tourStops,tourDuration} from './tour.js';
+import {createHeroMedia} from './hero-media.js';
 
 const $=s=>document.querySelector(s), host=$('#scene'), stage=$('.explorer');
+createHeroMedia({video:$('#hero-video'),button:$('#hero-media-toggle'),hero:$('.hero'),document,
+ motion:matchMedia('(prefers-reduced-motion: reduce)'),connection:navigator.connection,IntersectionObserver:window.IntersectionObserver});
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const mobile=()=>innerWidth<=900;
 const order=['whole','courtyard','interior','brick','balcony'];

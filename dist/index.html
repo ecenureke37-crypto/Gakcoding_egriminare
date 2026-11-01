@@ -4,7 +4,7 @@
  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
  <title>Harput Ulu Camii | Eğri Minare</title>
  <meta name="description" content="Harput Ulu Camii ve Eğri Minare. Gerçek görüntüler, kaynaklı hikâyeler ve etkileşimli mimari keşif.">
- <meta name="theme-color" content="#edf0ed">
+ <meta name="theme-color" content="#f5f4f1">
  <link rel="icon" href="assets/cami.jpg">
  <link rel="stylesheet" href="style.css">
  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
@@ -15,8 +15,9 @@
 <main>
  <section class="hero" id="baslangic" aria-labelledby="hero-title">
   <img class="hero-image" src="assets/cami.jpg" width="1600" height="1063" fetchpriority="high" alt="Harput Ulu Camii'nin geniş taş cephesi, giriş kapısı ve çatıdan yükselen eğik tuğla minaresi">
-  <div class="hero-content"><p class="hero-place">Harput'un yaşayan mirası</p><h1 id="hero-title">Harput Ulu Camii</h1><p class="hero-subtitle">Bir avlu. Yüzyılların izi.<br>Göğe uzanan eğri bir imza.</p><div class="hero-actions"><a href="#kesif" class="primary-action">Yapıyı keşfet <span aria-hidden="true">↗</span></a><button class="film-action" data-film><span class="play-symbol" aria-hidden="true">▷</span> Harput'a yukarıdan bak</button></div></div>
-  <div class="hero-bottom"><span>Artuklu mirası<br><b>1156–1157</b></span><span>Gerçek fotoğraf<br><b>Dosseman, 2006</b></span><a href="#kesif" aria-label="Sanal gezi bölümüne git">↓</a></div>
+  <video id="hero-video" class="hero-video" poster="assets/cami.jpg" preload="none" muted loop playsinline aria-hidden="true" tabindex="-1"></video>
+  <div class="hero-content"><p class="hero-place">Harput'un yaşayan mirası</p><h1 id="hero-title">Harput Ulu Camii</h1><p class="hero-subtitle">Bir avlu. Yüzyılların izi.<br>Göğe uzanan eğri bir imza.</p><div class="hero-actions"><a href="#kesif" class="primary-action">Yapıyı keşfet <span aria-hidden="true">↗</span></a></div></div>
+  <div class="hero-bottom"><span>Artuklu mirası<br><b>1156–1157</b></span><span>Fotoğraf · Dosseman, 2006<br><b>Video · kullanıcı arşivi</b></span><button id="hero-media-toggle" class="hero-media-toggle" type="button" aria-label="Arka plan videosunu oynat" title="Arka plan videosunu oynat" aria-controls="hero-video" aria-pressed="false" hidden><span class="hero-pause-icon" aria-hidden="true"></span><span class="hero-play-icon" aria-hidden="true"></span></button><a href="#kesif" aria-label="Sanal gezi bölümüne git">↓</a></div>
  </section>
  <section class="discovery" id="kesif" aria-labelledby="explore-title">
   <div class="section-top"><div><p class="section-kicker">Yapıya yakından bak</p><h2 id="explore-title">Dışarıdan içeriye.</h2></div><div class="section-explore-actions"><p class="section-summary">Minarenin siluetinden avlunun sessizliğine,<br>aynı yapının farklı yüzleri.</p><button id="start-tour" class="start-tour" type="button"><span class="start-tour-symbol" aria-hidden="true">▷</span> İçeride gez</button></div></div>

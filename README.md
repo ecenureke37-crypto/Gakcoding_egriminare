@@ -12,6 +12,7 @@ Sunucu `0.0.0.0` üzerinde `PORT` ortam değişkenini, değişken verilmezse 518
 
 - `dist/index.html`, `dist/style.css`: sayfa ve duyarlı görünüm.
 - `dist/app.js`: kamera, gezi durakları ve etkileşimler.
+- `dist/hero-media.js`: arka plan videosunun veri/hareket tercihi, görünürlük ve oynatma denetimi.
 - `dist/architecture.js`, `dist/minaret.js`: temsili 3D yapı.
 - `dist/story-content.js`: kaynaklı durak açıklamaları.
 - `dist/assets/`: görseller ve kaynak/lisans manifesti.
@@ -27,7 +28,9 @@ Beş durak aynı kamera, açıklama ve fotoğraf durumunu yönetir: **Bütün ya
 
 Yakın çevredeki seyrek ağaçlar dış fotoğraftaki siluet ve yerleşim ilişkilerinden yorumlanmıştır; peyzaj rölövesi değildir. İç mekândaki kiremit tonlu halı, beyaz sıvalı payeler, tuğla kemerler, mihrap ve ahşap minber `Harput Ulu Cami 9627` fotoğrafından geliştirilmiştir.
 
-Kaynaklı hikâye, gerçek avlu fotoğrafı ve resmî drone filmi sayfada ayrı bölümlerdedir. Drone filmi ancak kullanıcı açtığında YouTube iframe'i içinde yüklenir; video dosyası indirilmez ve arka planda otomatik oynatılmaz.
+Kaynaklı hikâye, gerçek avlu fotoğrafı ve resmî drone filmi sayfada ayrı bölümlerdedir. Alt bölümdeki resmî film ancak kullanıcı açtığında YouTube iframe'i içinde yüklenir; bu gömme için video dosyası indirilmez.
+
+İlk ekrandaki ayrı, yerel `hero-drone.mp4` dosyası sessiz, döngülü ve satır içi arka plan videosudur. `cami.jpg` poster ve yedek görüntü olarak korunur. Düşük hareket tercihi veya Save-Data etkinken video kaynağı atanmaz ve video baytları istenmez. Görünmeyen sekmede veya ekran dışında video durur; kullanıcının duraklatma tercihi korunur. Otomatik oynatma reddedilirse fotoğraf görünür kalır ve oynatma düğmesiyle yeniden denenebilir. Statik Node sunucusu MP4 MIME türünü, gövdesiz HEAD yanıtlarını ve tek aralıklı byte-range aktarımını destekler; dosyaları akışla sunar.
 
 ## Mimari Doğruluk Sınırları
 
@@ -51,6 +54,8 @@ Fotoğraflar Dosseman, 2006, [CC BY-SA 4.0](https://creativecommons.org/licenses
 Repoda optimize edilmiş görseller bulunur. Görsel künyeleri sayfada, makine okunur kayıtlar `dist/assets/asset-manifest.json` içindedir. Lisans, fotoğrafçı, kaynak ve değişiklik bilgisini yeni dağıtımlarda koruyun.
 
 [Drone filmi](https://www.youtube.com/watch?v=jeS2PVqWVcQ): Elazığ İl Kültür ve Turizm Müdürlüğü, 2021. YouTube gömme oynatıcısı üzerinden sunulur; yerel bir video varlığı veya CC BY-SA fotoğraf lisansının parçası değildir.
+
+`dist/assets/hero-drone.mp4`, kullanıcının sağladığı yerel `videoplayback.mp4` dosyasının baytları değiştirilmeden yeniden adlandırılmış kopyasıdır; bu çalışma sırasında indirilmedi veya yeniden kodlanmadı. Bu yerel dosya için eser sahibi veya yeniden dağıtım lisansı sağlanmamıştır; fotoğrafların CC BY-SA 4.0 lisansı videoyu kapsamaz. Yerel klibin alt bölümdeki YouTube kaydıyla aynı eser olduğu doğrulanmamıştır. Kamuya yeniden dağıtımdan önce kullanım hakları doğrulanmalıdır.
 
 ## İçerik Kaynakları
 

@@ -131,6 +131,7 @@ export function createMinaret(T) {
   }
   lathe([[.82, 7.88], [.89, 7.94], [.98, 8.02], [1.1, 8.1], [1.12, 8.19]], stone, 'balcony');
   const ring = add(new T.TorusGeometry(1.08, .065, 8, 96), paleStone, 8.2, 'balcony'); ring.rotation.x = Math.PI / 2;
+  const deck = add(new T.RingGeometry(.56, 1.065, 96), paleStone, 8.205, 'balcony'); deck.rotation.x = -Math.PI / 2;
 
   const panel = new T.Shape();
   panel.moveTo(-.107, 0); panel.lineTo(.107, 0); panel.lineTo(.107, .49); panel.lineTo(-.107, .49); panel.closePath();
@@ -148,7 +149,7 @@ export function createMinaret(T) {
   parapet.castShadow = true; parapet.receiveShadow = true; parapet.userData.part = 'balcony'; group.add(parapet);
   const crown = add(new T.TorusGeometry(1.11, .045, 8, 96), paleStone, 8.7, 'balcony'); crown.rotation.x = Math.PI / 2;
 
-  add(new T.CylinderGeometry(.53, .57, 1.5, 64), darkBrick, 9.42, 'balcony');
+  add(new T.CylinderGeometry(.53, .57, 1.98, 64), darkBrick, 9.18, 'balcony');
   const topBricks = new T.InstancedMesh(new T.BoxGeometry(.135, .047, .047), brick, 32 * 28);
   let n = 0;
   for (let row = 0; row < 28; row++) {
