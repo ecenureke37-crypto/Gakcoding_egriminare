@@ -48,6 +48,20 @@
       "limitation": "Dosya adi harim.jpg olsa da tam harim panoramasi degildir."
     },
     {
+      "file": "ic-mekan.jpg",
+      "title": "Harput Ulu Cami 9627",
+      "creator": "Dosseman",
+      "year": 2006,
+      "capturedAt": "2006-09-15",
+      "source": "https://commons.wikimedia.org/wiki/File:Harput_Ulu_Cami_9627.jpg",
+      "original": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Harput_Ulu_Cami_9627.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "changes": ["4288x2848 kaynak fotograf 2400x1594 boyutuna indirildi", "JPEG kalite 90 olarak sikistirildi"],
+      "usage": "Gercek harimde mihrab, minber, hali ve kemer referansi",
+      "limitation": "2006 tarihli arsiv fotografidir; guncel ic mekani veya 360 derece panoramayi temsil ettigi iddia edilmez."
+    },
+    {
       "file": "stone-surface.jpg",
       "title": "Harput Ulu Cami 9621 fotografindan turetilmis tas yuzey",
       "creator": "Dosseman (kaynak fotograf)",

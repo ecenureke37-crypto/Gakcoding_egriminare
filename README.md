@@ -23,6 +23,10 @@ Geliştirme bu GitHub reposu üzerinden sürdürülür. Barındırma servisi Nod
 
 Beş durak aynı kamera, açıklama ve fotoğraf durumunu yönetir: **Bütün yapı**, **Avlu**, **Harim**, **Tuğla işçiliği**, **Şerefe**. 3D ile kaynak fotoğrafı arasında geçiş yapılabilir. Bakış sürgüsü ve sürükleme, düşey referans, akşam ışığı, sıfırlama ve tam ekran kontrolleri bulunur. Harita bağlantısı Harput Ulu Camii/Elazığ hedefini kullanır.
 
+`İçeride gez` seçeneği insan göz hizasında altı duraklı bir rota açar: giriş, eşik, avlu, revak, harim ve mihrap. Gezi oynatılabilir, duraklatılabilir, zaman çizgisinden aranabilir ve duraklar arasında atlanabilir. Fare veya dokunma sürüklemesi bakış yönünü sınırlı olarak değiştirir. `Gerçek görüntü` bağlantısı bulunduğun durağa ait lisanslı arşiv fotoğrafını açar. Düşük hareket tercihi açık olduğunda gezi otomatik başlamaz.
+
+Yakın çevredeki seyrek ağaçlar dış fotoğraftaki siluet ve yerleşim ilişkilerinden yorumlanmıştır; peyzaj rölövesi değildir. İç mekândaki kiremit tonlu halı, beyaz sıvalı payeler, tuğla kemerler, mihrap ve ahşap minber `Harput Ulu Cami 9627` fotoğrafından geliştirilmiştir.
+
 Kaynaklı hikâye, gerçek avlu fotoğrafı ve resmî drone filmi sayfada ayrı bölümlerdedir. Drone filmi ancak kullanıcı açtığında YouTube iframe'i içinde yüklenir; video dosyası indirilmez ve arka planda otomatik oynatılmaz.
 
 ## Mimari Doğruluk Sınırları
@@ -41,6 +45,7 @@ Fotoğraflar Dosseman, 2006, [CC BY-SA 4.0](https://creativecommons.org/licenses
 | `dist/assets/minare.jpg` | [Harput Ulu Cami 1128](https://commons.wikimedia.org/wiki/File:Harput_Ulu_Cami_1128.jpg) | Minare ayrıntısı; boyutlandırıldı. |
 | `dist/assets/avlu.jpg` | [Harput Ulu Cami 1123](https://commons.wikimedia.org/wiki/File:Harput_Ulu_Cami_1123.jpg) | İç avlu ve koruyucu örtü; boyutlandırıldı. |
 | `dist/assets/harim.jpg` | [Harput Ulu Cami 1120](https://commons.wikimedia.org/wiki/File:Harput_Ulu_Cami_1120.jpg) | Revak ayrıntısı; boyutlandırıldı. Tam harim görüntüsü değildir. |
+| `dist/assets/ic-mekan.jpg` | [Harput Ulu Cami 9627](https://commons.wikimedia.org/wiki/File:Harput_Ulu_Cami_9627.jpg) | Harim, mihrap ve minber yönü; boyutlandırıldı ve JPEG olarak sıkıştırıldı. Tam panorama değildir. |
 | `dist/assets/stone-surface.jpg` | `cami.jpg` ile aynı Dosseman/9621 fotoğrafı | Taş duvar bölgesi kırpıldı, dört yöne aynalanarak tekrar edebilir yüzey türetildi. Türev görsel de CC BY-SA 4.0 kapsamındadır. |
 
 Repoda optimize edilmiş görseller bulunur. Görsel künyeleri sayfada, makine okunur kayıtlar `dist/assets/asset-manifest.json` içindedir. Lisans, fotoğrafçı, kaynak ve değişiklik bilgisini yeni dağıtımlarda koruyun.

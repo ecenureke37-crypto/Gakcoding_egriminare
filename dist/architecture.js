@@ -61,7 +61,34 @@ export function createArchitecture(T) {
   const lead = new T.MeshStandardMaterial({ color: 0x6b7377, roughness: .82, metalness: .25 });
   const paving = new T.MeshStandardMaterial({ color: 0xa8a397, roughness: .95, map: colorMap, bumpMap, bumpScale: .015 });
   const dark = new T.MeshStandardMaterial({ color: 0x3d332a, roughness: .95 });
-  const carpet = new T.MeshStandardMaterial({ color: 0x596a64, roughness: 1 });
+  const plaster = new T.MeshStandardMaterial({ color: 0xd7d3c6, roughness: .98, bumpMap, bumpScale: .007 });
+  const greyPlinth = new T.MeshStandardMaterial({ color: 0xa2a49f, roughness: .96 });
+  const carpetCanvas = document.createElement('canvas'); carpetCanvas.width = carpetCanvas.height = 512;
+  const carpetContext = carpetCanvas.getContext('2d');
+  carpetContext.fillStyle = '#995f59'; carpetContext.fillRect(0, 0, 512, 512);
+  for (let row = 0; row < 4; row++) {
+    const y = row * 128;
+    carpetContext.fillStyle = '#c3ac95'; carpetContext.fillRect(0, y, 512, 3);
+    carpetContext.fillStyle = '#484b43'; carpetContext.fillRect(0, y + 5, 512, 8);
+    carpetContext.fillStyle = '#c2af94'; carpetContext.fillRect(0, y + 14, 512, 2);
+    for (let x = 24; x < 512; x += 64) {
+      carpetContext.strokeStyle = '#b9a88e'; carpetContext.lineWidth = 3;
+      carpetContext.beginPath(); carpetContext.moveTo(x - 18, y + 100); carpetContext.lineTo(x - 18, y + 43);
+      carpetContext.quadraticCurveTo(x - 18, y + 22, x, y + 15); carpetContext.quadraticCurveTo(x + 18, y + 22, x + 18, y + 43);
+      carpetContext.lineTo(x + 18, y + 100); carpetContext.stroke();
+      carpetContext.strokeStyle = '#4d5046'; carpetContext.lineWidth = 3;
+      carpetContext.beginPath(); carpetContext.moveTo(x - 22, y + 104); carpetContext.lineTo(x - 22, y + 42);
+      carpetContext.quadraticCurveTo(x - 22, y + 17, x, y + 11); carpetContext.quadraticCurveTo(x + 22, y + 17, x + 22, y + 42);
+      carpetContext.lineTo(x + 22, y + 104); carpetContext.stroke();
+      for (let dy = 40; dy < 105; dy += 13) {
+        carpetContext.fillStyle = '#c2b296'; carpetContext.fillRect(x - 20, y + dy, 3, 3); carpetContext.fillRect(x + 18, y + dy, 3, 3);
+      }
+    }
+  }
+  for (let i = 0; i < 12000; i++) { carpetContext.fillStyle = `rgba(210,211,183,${random() * .05})`; carpetContext.fillRect(random() * 512, random() * 512, 1, 2); }
+  const carpetMap = new T.CanvasTexture(carpetCanvas); carpetMap.colorSpace = T.SRGBColorSpace; carpetMap.wrapS = carpetMap.wrapT = T.RepeatWrapping; carpetMap.repeat.set(2, 1);
+  const carpet = new T.MeshStandardMaterial({ color: 0xffffff, map: carpetMap, bumpMap: carpetMap, bumpScale: .006, roughness: 1 });
+  const vaultMaterial = brick.clone(); vaultMaterial.color.set(0xdcd5c7); vaultMaterial.side = T.DoubleSide;
   const boxGeometry = new T.BoxGeometry(1, 1, 1);
   function box(x, y, z, w, h, d, material = stone, parent = group) {
     const m = new T.Mesh(boxGeometry, material); m.position.set(x, y, z); m.scale.set(w, h, d);
@@ -95,7 +122,8 @@ export function createArchitecture(T) {
   box(1.8, 2.57, 1.25, .4, .54, 4.9, stone, cutWalls);
   const portal = new T.Mesh(archGeometry(1.1, 1.55, 2.48, .32, 2.85), ashlar);
   portal.position.set(1.63, 0, -.05); portal.rotation.y = Math.PI / 2; portal.castShadow = portal.receiveShadow = true; cutWalls.add(portal);
-  box(1.82, .95, -.05, .025, 1.9, .89, dark, cutWalls);
+  const entranceDoor = box(1.82, .95, -.05, .025, 1.9, .89, dark, cutWalls);
+  entranceDoor.name = 'Gezide acilabilen giris kapisi';
   const baseArch = new T.Mesh(archGeometry(1.12, 1.12, 2.1, .32, 2.85), brick);
   baseArch.position.set(1.63, 0, 2.25); baseArch.rotation.y = Math.PI / 2; baseArch.castShadow = baseArch.receiveShadow = true; cutWalls.add(baseArch);
   for (const z of [-3.05, 4.65]) box(2.02, 2.25, z, .025, .4, .09, dark, cutWalls);
@@ -103,12 +131,24 @@ export function createArchitecture(T) {
   // Two east-west aisles in the southern harim, on squat rectangular piers.
   const harimArches = [];
   for (let i = 0; i < 6; i++) harimArches.push([-5.05 + i * 1.22, 0, -1.85]);
-  arches(harimArches, 1.0);
+  arches(harimArches, 1.0, 0, plaster);
+  const archBand = new T.Shape();
+  archBand.moveTo(-.5,1.5);archBand.quadraticCurveTo(-.5,2.05,0,2.35);archBand.quadraticCurveTo(.5,2.05,.5,1.5);
+  archBand.lineTo(.61,1.5);archBand.quadraticCurveTo(.61,2.14,0,2.47);archBand.quadraticCurveTo(-.61,2.14,-.61,1.5);archBand.closePath();
+  const bandMesh = new T.InstancedMesh(new T.ExtrudeGeometry(archBand,{depth:.012,bevelEnabled:false,curveSegments:16}),brick,12);
+  const bandTransform = new T.Object3D();
+  harimArches.forEach(([x,y,z],i)=>{for(let side=0;side<2;side++){bandTransform.position.set(x,y,z+(side?.361:-.013));bandTransform.updateMatrix();bandMesh.setMatrixAt(i*2+side,bandTransform.matrix);}});
+  bandMesh.castShadow=bandMesh.receiveShadow=true;group.add(bandMesh);
   const pierPositions = [];
   for (let i = 0; i < 7; i++) pierPositions.push([-5.66 + i * 1.22, .7, -1.65]);
-  const pier = new T.InstancedMesh(new T.BoxGeometry(.39, 1.4, .58), ashlar, pierPositions.length);
+  const pier = new T.InstancedMesh(new T.BoxGeometry(.39, 1.4, .58), plaster, pierPositions.length);
   const dummy = new T.Object3D(); pierPositions.forEach(([x, y, z], i) => { dummy.position.set(x, y, z); dummy.updateMatrix(); pier.setMatrixAt(i, dummy.matrix); });
   pier.castShadow = pier.receiveShadow = true; group.add(pier);
+  for (const [x] of pierPositions) box(x, .15, -1.65, .4, .3, .59, greyPlinth);
+  box(-2, 1.42, -3.588, 7.19, 2.84, .025, plaster, cutWalls);
+  box(-5.588, 1.42, -1.85, .025, 2.84, 3.45, plaster);
+  box(1.588, 1.42, -2.15, .025, 2.84, 3.3, plaster, cutWalls);
+  box(-2, .14, -3.565, 7.19, .28, .03, greyPlinth, cutWalls);
   // The small central open court is surrounded by arcades, not an enormous roof void.
   const courtyardCenter = new T.Vector3(-2.0, .08, 2.55);
   box(-2, .075, 2.55, 2.45, .035, 2.8, paving);
@@ -117,9 +157,43 @@ export function createArchitecture(T) {
   // Southern intermediate bay and the northern two transverse vaulted bays.
   arches([[-4.75, 0, .13], [-3.3, 0, .13], [-1.85, 0, .13], [-.4, 0, .13], [.95, 0, .13]], 1.13);
   const prayerCenter = new T.Vector3(-2, 1.25, -2.25);
-  box(-2, 1.03, -3.48, 1.05, 2.06, .22, brick);
-  const niche = new T.Mesh(new T.SphereGeometry(.34, 16, 12, 0, Math.PI), dark);
-  niche.scale.set(1, 2.05, .45); niche.position.set(-2, 1.07, -3.31); niche.rotation.y = Math.PI; group.add(niche);
+  box(-2, 1.03, -3.48, 1.05, 2.06, .22, plaster);
+  const niche = new T.Mesh(new T.SphereGeometry(.34, 20, 16, 0, Math.PI), new T.MeshStandardMaterial({color:0xbeb9aa,roughness:1,side:T.DoubleSide}));
+  niche.scale.set(1, 2.05, .45); niche.position.set(-2, 1.07, -3.355); niche.rotation.y = Math.PI; group.add(niche);
+  // The archive interior shows a restrained dark timber minber beside the pale mihrab.
+  const timber = new T.MeshStandardMaterial({color:0x51402c,roughness:.85});
+  const minber = new T.Group(); minber.name = 'Arsiv fotografini yorumlayan ahsap minber'; group.add(minber);
+  for(let i=0;i<7;i++) box(-.65,.11+i*.1,-2.08-i*.17,.65,.2+i*.2,.18,timber,minber);
+  for(const x of[-.99,-.31]) {
+    box(x,.62,-2.57,.055,1.24,.055,timber,minber);
+    box(x,1.12,-3.11,.065,2.24,.065,timber,minber);
+    const rail=box(x,1.1,-2.57,.055,.055,1.37,timber,minber);rail.rotation.x=.65;
+    for(let i=0;i<6;i++)box(x,.6+i*.08,-2.1-i*.17,.025,.85,.025,timber,minber);
+  }
+  box(-.65,1.45,-3.12,.72,.08,.48,timber,minber);
+  box(-.65,2.27,-3.12,.74,.065,.55,timber,minber);
+  const minberCrown = new T.Mesh(new T.ConeGeometry(.34,.8,8),timber);minberCrown.position.set(-.65,2.68,-3.12);minberCrown.castShadow=true;minber.add(minberCrown);
+  // Thin DoubleSide barrel vaults stay with the removable roof and remain visible from eye level.
+  function barrelVault(centerX, centerZ, length, radius, springY, alongX = true) {
+    const vertices = [], uvs = [], indices = [], segments = 32;
+    for (let end = 0; end < 2; end++) for (let i = 0; i <= segments; i++) {
+      const a = i / segments * Math.PI, transverse = Math.cos(a) * radius;
+      vertices.push(alongX ? centerX + (end - .5) * length : centerX + transverse, springY + Math.sin(a) * radius, alongX ? centerZ + transverse : centerZ + (end - .5) * length);
+      uvs.push(end * length, i / segments * radius * Math.PI);
+    }
+    for (let i = 0; i < segments; i++) { const k = i + segments + 1; indices.push(i, k, i + 1, i + 1, k, k + 1); }
+    const g = new T.BufferGeometry(); g.setAttribute('position', new T.Float32BufferAttribute(vertices, 3)); g.setAttribute('uv', new T.Float32BufferAttribute(uvs, 2)); g.setIndex(indices); g.computeVertexNormals();
+    const vault = new T.Mesh(g, vaultMaterial); vault.castShadow = vault.receiveShadow = true; roof.add(vault); return vault;
+  }
+  barrelVault(-2, -2.78, 7.25, .84, 1.91);
+  barrelVault(-2, -.73, 7.25, .85, 1.9);
+  barrelVault(-4.52, 2.4, 6.2, .85, 1.9, false);
+  barrelVault(.63, 2.4, 6.2, .83, 1.92, false);
+  barrelVault(-2, 4.89, 2.45, .77, 1.98);
+  // Restrained, warm interior fill; no invented decorative fixture is shown.
+  const interiorLights = new T.Group(); interiorLights.name = 'Temsili ic mekan dolgu isigi'; group.add(interiorLights);
+  const prayerFill = new T.PointLight(0xffe7c6, 7.5, 9, 2); prayerFill.position.set(-2, 2.42, -2.1); interiorLights.add(prayerFill);
+  const vestibuleFill = new T.PointLight(0xe6efed, 5.5, 8, 2); vestibuleFill.position.set(.2, 2.25, .2); interiorLights.add(vestibuleFill);
   // Lead-like low roof slabs preserve the court aperture in the exterior mode.
   box(-2, 2.95, -1.88, 8.08, .22, 4.38, lead, roof);
   box(-2, 2.95, 4.99, 8.08, .22, 2.05, lead, roof);
@@ -144,5 +218,6 @@ export function createArchitecture(T) {
   box(-2, 2.87, -3.84, 7.6, .13, .48, ashlar, cutWalls);
   box(1.84, 2.87, 1, .48, .13, 10.05, ashlar, cutWalls);
   group.userData.minaretBase = new T.Vector3(1.47, 0, 2.25);
-  return { group, roof, cutWalls, courtyardCenter, prayerCenter, modernCover };
+  const walkRoute = [new T.Vector3(5, 1.25, -.05), new T.Vector3(2.35, 1.25, -.05), new T.Vector3(1.1, 1.25, -.28), new T.Vector3(.55, 1.25, -.78), new T.Vector3(-1.3, 1.25, -.78), new T.Vector3(-1.3, 1.25, -2.66), new T.Vector3(-2.1, 1.25, -2.8)];
+  return { group, roof, cutWalls, courtyardCenter, prayerCenter, modernCover, entranceDoor, interiorLights, walkRoute };
 }

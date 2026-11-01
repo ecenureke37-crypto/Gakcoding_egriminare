@@ -3,19 +3,23 @@ import {OrbitControls} from './vendor/OrbitControls.js';
 import {createArchitecture} from './architecture.js';
 import {createMinaret} from './minaret.js';
 import {chapters} from './story-content.js';
+import {createEnvironment} from './environment.js';
+import {createTourPlayer,tourStops,tourDuration} from './tour.js';
 
 const $=s=>document.querySelector(s), host=$('#scene'), stage=$('.explorer');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const mobile=()=>innerWidth<=900;
 const order=['whole','courtyard','interior','brick','balcony'];
-const state={view:'whole',mode:'model',evening:false,visited:new Set(['whole'])};
-let renderer,scene,camera,controls,building,tower,referenceLine,keyLight,fillLight,animation;
+const state={view:'whole',mode:'model',touring:false,evening:false,visited:new Set(['whole'])};
+let renderer,scene,camera,controls,building,tower,environment,referenceLine,keyLight,fillLight,animation,lastFrame=0;
+const tour=createTourPlayer(T),lookOffset=new T.Euler(0,0,0,'YXZ'),lookRotation=new T.Quaternion();
+let lastTourStop=-1,tourDrag;
 let dirty=true,inView=true,modelAvailable=false,renderCount=0;
 T.DefaultLoadingManager.onLoad=()=>{dirty=true};
 const photos={
  whole:{src:'assets/cami.jpg',alt:'Harput Ulu Camii taş dış cephesi ve Eğri Minare',caption:'Dış yapı. Dosseman, Eylül 2006. CC BY-SA 4.0.'},
  courtyard:{src:'assets/avlu.jpg',alt:'İç avluda taş payeler, sivri tuğla kemerler ve koruyucu cam örtü',caption:'İç avlu ve koruyucu örtü. Dosseman, 9 Eylül 2006. CC BY-SA 4.0.'},
- interior:{src:'assets/harim.jpg',alt:'Avluya açılan gerçek tuğla revakların ve taş payelerin ayrıntısı',caption:'Avluya açılan revak ayrıntısı; harimin tam panoraması değildir. Dosseman, 2006. CC BY-SA 4.0.'},
+ interior:{src:'assets/ic-mekan.jpg',alt:'Harput Ulu Camii hariminde açık renk payeler, tuğla kemerler, mihrap ve ahşap minber',caption:'Gerçek harim, mihrap ve minber yönü. Dosseman, 2006. CC BY-SA 4.0.'},
  brick:{src:'assets/minare.jpg',alt:'Minarenin geometrik tuğla işçiliği ve aşınmış harcı',caption:'Minare ayrıntısı. Dosseman, 9 Eylül 2006. CC BY-SA 4.0.'},
  balcony:{src:'assets/minare.jpg',alt:'Eğri Minare tek taş şerefesi ve kısa üst gövdesi',caption:'Şerefe ve üst gövde. Dosseman, 9 Eylül 2006. CC BY-SA 4.0.'}
 };
@@ -63,11 +67,13 @@ function setCamera(view,immediate=false){
 }
 function selectView(view,{immediate=false}={}){
  if(!chapters[view])return;
+ if(state.touring)exitTour(false);
  state.view=view;state.visited.add(view);
  if(building){const inside=view==='interior';building.roof.visible=!inside;building.cutWalls.visible=!inside;building.modernCover.visible=view!=='courtyard'}
  renderContent();setCamera(view,immediate);
 }
 function setMode(mode){
+ if(state.touring)exitTour(false);
  if(mode==='model'&&!modelAvailable)mode='photo';
  state.mode=mode;const model=mode==='model';
  stage.dataset.mode=mode;host.hidden=!model;$('#reference-photo').hidden=model;
@@ -79,7 +85,7 @@ function resize(){
  if(!renderer)return;
  const {width,height}=host.getBoundingClientRect();if(!width||!height)return;
  renderer.setSize(width,height);camera.aspect=width/height;camera.updateProjectionMatrix();
- setCamera(state.view,true);dirty=true;
+ if(state.touring)applyTourPose();else setCamera(state.view,true);dirty=true;
 }
 function addGround(){
  const material=new T.MeshStandardMaterial({color:0xc4c7ba,roughness:1});
@@ -98,6 +104,7 @@ function build(){
  fillLight=new T.DirectionalLight(0xc8dfeb,1.1);fillLight.position.set(9,8,-7);scene.add(fillLight);
  building=createArchitecture(T);scene.add(building.group);
  tower=createMinaret(T);tower.position.copy(building.group.userData.minaretBase);scene.add(tower);addGround();
+ environment=createEnvironment(T);scene.add(environment.group);
  const points=[new T.Vector3(2.75,0,2.25),new T.Vector3(2.75,11.3,2.25)];
  referenceLine=new T.Line(new T.BufferGeometry().setFromPoints(points),new T.LineDashedMaterial({color:0x7b2436,dashSize:.14,gapSize:.1,depthTest:false,transparent:true,opacity:.8}));referenceLine.computeLineDistances();referenceLine.renderOrder=5;referenceLine.visible=false;scene.add(referenceLine);
  controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=!reduced;controls.dampingFactor=.075;controls.enablePan=false;controls.enableZoom=false;controls.rotateSpeed=.65;
@@ -106,8 +113,10 @@ function build(){
  new ResizeObserver(resize).observe(host);
  const observer=new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;if(inView)dirty=true},{rootMargin:'100px'});observer.observe(host);
  const ray=new T.Raycaster(),pointer=new T.Vector2();let down;
- renderer.domElement.addEventListener('pointerdown',e=>{down=[e.clientX,e.clientY]});
- renderer.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>5)return;const rect=host.getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);ray.setFromCamera(pointer,camera);const hit=ray.intersectObject(tower,true).find(x=>x.object.userData.part);if(hit)selectView(hit.object.userData.part)});
+ renderer.domElement.addEventListener('pointerdown',e=>{down=[e.clientX,e.clientY];if(state.touring){tourDrag={id:e.pointerId,x:e.clientX,y:e.clientY};renderer.domElement.setPointerCapture(e.pointerId)}});
+ renderer.domElement.addEventListener('pointermove',e=>{if(!state.touring||!tourDrag||e.pointerId!==tourDrag.id)return;lookOffset.y=T.MathUtils.clamp(lookOffset.y-(e.clientX-tourDrag.x)*.004,-Math.PI*.7,Math.PI*.7);lookOffset.x=T.MathUtils.clamp(lookOffset.x-(e.clientY-tourDrag.y)*.003,-.65,.65);tourDrag.x=e.clientX;tourDrag.y=e.clientY;dirty=true});
+ renderer.domElement.addEventListener('pointercancel',()=>{tourDrag=null});
+ renderer.domElement.addEventListener('pointerup',e=>{tourDrag=null;if(state.touring)return;if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>5)return;const rect=host.getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);ray.setFromCamera(pointer,camera);const hit=ray.intersectObject(tower,true).find(x=>x.object.userData.part);if(hit)selectView(hit.object.userData.part)});
  modelAvailable=true;$('#loading').remove();resize();selectView('whole',{immediate:true});renderer.setAnimationLoop(frame);
 }
 function updateAngle(){const a=((controls.getAzimuthalAngle()*180/Math.PI)%360+360)%360;$('#angle').value=Math.round(a);$('#angle-value').value=Math.round(a)+'°'}
@@ -120,11 +129,80 @@ function updateHotspots(){
  });
 }
 function frame(now){
+ const delta=lastFrame?Math.min((now-lastFrame)/1000,.1):0;lastFrame=now;
  if(state.mode!=='model'||document.hidden||!inView)return;
+ if(state.touring){
+  if(tour.update(delta))dirty=true;
+  if(dirty){applyTourPose();environment.update(reduced?0:now*.001);renderer.render(scene,camera);updateTourUI();dirty=false}
+  return;
+ }
  if(animation){const t=Math.min((now-animation.time)/1100,1),e=t*t*(3-2*t);camera.position.lerpVectors(animation.from,animation.to,e);controls.target.lerpVectors(animation.fromTarget,animation.toTarget,e);dirty=true;if(t===1)animation=null}
  controls.update();
- if(dirty){renderer.render(scene,camera);updateHotspots();dirty=false;renderCount++}
+ if(dirty){environment.update(reduced?0:now*.001);renderer.render(scene,camera);updateHotspots();dirty=false;renderCount++}
 }
+
+function applyTourPose(){
+ const pose=tour.pose();camera.position.copy(pose.position);camera.lookAt(pose.target);
+ lookRotation.setFromEuler(lookOffset);camera.quaternion.multiply(lookRotation);
+}
+const formatTime=value=>Math.floor(value/60)+':'+String(Math.floor(value%60)).padStart(2,'0');
+function updateTourUI(){
+ const index=tour.stopIndex,stop=tourStops[index];
+ if(lastTourStop!==index){
+  $('#tour-stop-label').textContent=String(index+1).padStart(2,'0')+' / 06 · '+stop.label;
+  $('#tour-stop-title').textContent=stop.title;$('#tour-stop-text').textContent=stop.text;
+  document.querySelectorAll('[data-tour-stop]').forEach(b=>{const active=Number(b.dataset.tourStop)===index;b.setAttribute('aria-pressed',String(active));if(active)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current')});
+  lastTourStop=index;
+ }
+ $('#tour-progress').value=Math.round(tour.time/tourDuration*1000);
+ $('#tour-progress').setAttribute('aria-valuetext',formatTime(tour.time)+' / '+formatTime(tourDuration));
+ $('#tour-elapsed').value=formatTime(tour.time)+' / '+formatTime(tourDuration);
+ $('#tour-play').setAttribute('aria-pressed',String(tour.playing));
+ const action=tour.playing?'Geziyi duraklat':tour.time>=tourDuration?'Geziyi yeniden başlat':'Geziyi oynat';
+ $('#tour-play').setAttribute('aria-label',action);$('#tour-play').title=action;
+ $('#tour-prev').disabled=tour.time<.05;$('#tour-next').disabled=index===tourStops.length-1;
+}
+function startTour(){
+ if(!modelAvailable)return;
+ setMode('model');state.touring=true;animation=null;controls.enabled=false;
+ stage.dataset.tour='true';$('#tour-overlay').hidden=false;
+ building.roof.visible=building.cutWalls.visible=building.modernCover.visible=true;
+ building.entranceDoor.visible=false;referenceLine.visible=false;
+ camera.fov=mobile()?78:70;camera.near=.035;camera.updateProjectionMatrix();
+ scene.background=new T.Color(0xcbd7d7);scene.fog=new T.Fog(0xcbd7d7,24,65);
+ tour.seek(0);if(!reduced)tour.play();lookOffset.set(0,0,0);lastTourStop=-1;
+ renderer.domElement.style.touchAction='none';host.tabIndex=0;
+ applyTourPose();updateTourUI();resize();dirty=true;
+ stage.scrollIntoView({behavior:'instant',block:'start'});$('#tour-play').focus({preventScroll:true});
+}
+function exitTour(restore=true){
+ if(!state.touring)return;
+ tour.pause();state.touring=false;tourDrag=null;stage.dataset.tour='false';$('#tour-overlay').hidden=true;
+ controls.enabled=true;renderer.domElement.style.touchAction='pan-y';host.removeAttribute('tabindex');
+ building.entranceDoor.visible=true;camera.fov=37;camera.near=.1;camera.updateProjectionMatrix();
+ scene.background=null;scene.fog=null;lookOffset.set(0,0,0);
+ if(restore)selectView('whole',{immediate:true});resize();dirty=true;
+}
+function moveTour(index){lookOffset.set(0,0,0);tour.goTo(index,{immediate:reduced});dirty=true;updateTourUI()}
+tourStops.forEach((stop,index)=>{const b=document.createElement('button');b.type='button';b.dataset.tourStop=index;b.textContent=stop.label;b.setAttribute('aria-label',stop.label+' durağına git');b.onclick=()=>moveTour(index);$('#tour-stops').append(b)});
+$('#start-tour').onclick=startTour;
+$('#tour-exit').onclick=()=>{exitTour();$('#start-tour').focus({preventScroll:true})};
+$('#tour-play').onclick=()=>{if(tour.playing)tour.pause();else tour.play();dirty=true;updateTourUI()};
+$('#tour-prev').onclick=()=>moveTour(tour.time>tourStops[tour.stopIndex].time+.5?tour.stopIndex:tour.stopIndex-1);
+$('#tour-next').onclick=()=>moveTour(tour.stopIndex+1);
+$('#tour-progress').oninput=e=>{tour.pause();tour.seek(Number(e.target.value)/1000*tourDuration);lookOffset.set(0,0,0);dirty=true;updateTourUI()};
+host.addEventListener('keydown',e=>{if(!state.touring)return;if(e.key===' '){e.preventDefault();$('#tour-play').click()}else if(e.key==='ArrowRight'){e.preventDefault();moveTour(tour.stopIndex+1)}else if(e.key==='ArrowLeft'){e.preventDefault();moveTour(tour.stopIndex-1)}else if(e.key==='Escape'){exitTour();$('#start-tour').focus({preventScroll:true})}});
+const tourPhoto=$('#tour-photo-dialog');
+$('#tour-reference').onclick=e=>{
+ e.preventDefault();tour.pause();updateTourUI();
+ const stop=tourStops[tour.stopIndex],isRevak=stop.id==='arcade';
+ const image=isRevak?{src:'assets/harim.jpg',alt:'Gerçek avlu revakları',caption:'Revak ayrıntısı. Dosseman, 2006. CC BY-SA 4.0.'}:photos[stop.photo];
+ $('#tour-photo-image').src=image.src;$('#tour-photo-image').alt=image.alt;$('#tour-photo-caption').textContent=image.caption;
+ const file=isRevak?'1120':stop.photo==='whole'?'9621':stop.photo==='courtyard'?'1123':'9627';
+ $('#tour-photo-source').href='https://commons.wikimedia.org/wiki/File:Harput_Ulu_Cami_'+file+'.jpg';
+ tourPhoto.showModal();
+};
+$('#tour-photo-close').onclick=()=>tourPhoto.close();
 
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>selectView(b.dataset.view));
 document.querySelectorAll('[data-spot]').forEach(b=>b.onclick=()=>selectView(b.dataset.spot));
